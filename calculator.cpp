@@ -1,9 +1,65 @@
 #include <windows.h>
+#include <string>
+
+HWND textfield,num1,num2,add,subt,mult,devi;
 
 /* This is where all the input to the window goes to */
 LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) {
+	char textSaved[100];
+	double num;
 	switch(Message) {
-		
+		case WM_CREATE:
+			textfield = CreateWindow("STATIC","Please input two numbers",WS_VISIBLE|WS_CHILD|WS_BORDER,35,20,180,20,hwnd,NULL,NULL,NULL);
+			num1 = CreateWindow("EDIT","",WS_VISIBLE|WS_CHILD|WS_BORDER,50,55,150,20,hwnd,NULL,NULL,NULL);
+			num2 = CreateWindow("EDIT","",WS_VISIBLE|WS_CHILD|WS_BORDER,50,90,150,20,hwnd,NULL,NULL,NULL);
+			add = CreateWindow("Button","+",WS_VISIBLE|WS_CHILD|WS_BORDER,55,125,20,20,hwnd,(HMENU) 1,NULL,NULL);
+			subt = CreateWindow("Button","-",WS_VISIBLE|WS_CHILD|WS_BORDER,95,125,20,20,hwnd,(HMENU) 2,NULL,NULL);
+			mult = CreateWindow("Button","*",WS_VISIBLE|WS_CHILD|WS_BORDER,135,125,20,20,hwnd,(HMENU) 3,NULL,NULL);
+			devi = CreateWindow("Button","/",WS_VISIBLE|WS_CHILD|WS_BORDER,175,125,20,20,hwnd,(HMENU) 4,NULL,NULL);
+			break;
+		case WM_COMMAND:
+			switch(LOWORD(wParam)){
+				case 1:
+					GetWindowText(num1, textSaved, sizeof(textSaved));
+					num=std::atof(textSaved);
+					GetWindowText(num2, textSaved, sizeof(textSaved));
+					num+=std::atof(textSaved);
+					::MessageBeep(MB_ICONERROR);
+					sprintf(textSaved, "%f", num);
+					::MessageBox(hwnd,textSaved,"Button was cliked",MB_OK);
+					break;
+				
+				case 2:
+					GetWindowText(num1, textSaved, sizeof(textSaved));
+					num=std::atof(textSaved);
+					GetWindowText(num2, textSaved, sizeof(textSaved));
+					num-=std::atof(textSaved);
+					::MessageBeep(MB_ICONERROR);
+					sprintf(textSaved, "%f", num);
+					::MessageBox(hwnd,textSaved,"Button was cliked",MB_OK);
+					break;
+				
+				case 3:
+					GetWindowText(num1, textSaved, sizeof(textSaved));
+					num=std::atof(textSaved);
+					GetWindowText(num2, textSaved, sizeof(textSaved));
+					num*=std::atof(textSaved);
+					::MessageBeep(MB_ICONERROR);
+					sprintf(textSaved, "%f", num);
+					::MessageBox(hwnd,textSaved,"Button was cliked",MB_OK);
+					break;
+				
+				case 4:
+					GetWindowText(num1, textSaved, sizeof(textSaved));
+					num=std::atof(textSaved);
+					GetWindowText(num2, textSaved, sizeof(textSaved));
+					num/=std::atof(textSaved);
+					::MessageBeep(MB_ICONERROR);
+					sprintf(textSaved, "%f", num);
+					::MessageBox(hwnd,textSaved,"Button was cliked",MB_OK);
+					break;
+			}
+			break;
 		/* Upon destruction, tell the main thread to stop */
 		case WM_DESTROY: {
 			PostQuitMessage(0);
@@ -31,7 +87,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	wc.hCursor	 = LoadCursor(NULL, IDC_ARROW);
 	
 	/* White, COLOR_WINDOW is just a #define for a system color, try Ctrl+Clicking it */
-	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
+	wc.hbrBackground = CreateSolidBrush(RGB(255, 0, 0));
 	wc.lpszClassName = "WindowClass";
 	wc.hIcon	 = LoadIcon(NULL, IDI_APPLICATION); /* Load a standard icon */
 	wc.hIconSm	 = LoadIcon(NULL, IDI_APPLICATION); /* use the name "A" to use the project icon */
@@ -41,11 +97,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		return 0;
 	}
 
-	hwnd = CreateWindowEx(WS_EX_CLIENTEDGE,"WindowClass","Caption",WS_VISIBLE|WS_OVERLAPPEDWINDOW,
+	hwnd = CreateWindowEx(WS_EX_CLIENTEDGE,"WindowClass","My Calculator",WS_VISIBLE|WS_SYSMENU,
 		CW_USEDEFAULT, /* x */
 		CW_USEDEFAULT, /* y */
-		640, /* width */
-		480, /* height */
+		250, /* width */
+		200, /* height */
 		NULL,NULL,hInstance,NULL);
 
 	if(hwnd == NULL) {
